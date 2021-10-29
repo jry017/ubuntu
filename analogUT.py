@@ -7,22 +7,25 @@ import time
 # Legger inn addresse til bus i en variabel
 bus = "/sys/bus/w1/devices/28-00000bc667df/w1_slave"
 
+#Leser fra bus og legger i en variabel
 temp = open(bus, "r").read()
+
+#Tar vekk overflødig tekst på temperatur input
 temp = (float(temp.split("t=")[-1]) / 1000)
 endThread = True
 
-
+#Metode som henter temperatur i bakgrunn i egen thread
 def Thread_getTemp():
     global temp
     global endThread
 
+#Løkke som kjører frem til endThread er satt False
     while endThread:
-        # leser temperaturverdi fra bus
         temp = open(bus, "r").read()
         temp = (float(temp.split("t=")[-1]) / 1000)
     print("Ending Thread..")
 
-
+#Lager og starter en tråd som kjører metoden thread_gettemp
 thread = threading.Thread(target=Thread_getTemp)
 thread.start()
 
@@ -59,6 +62,8 @@ for i in range(150):
     # setter en sleep verdi på 0.15, dvs det kjøres en måling flere ganger i sekundet.
     time.sleep(0.15)
 
-# lukker filen
+# lukker filskriver
 f.close()
+
+#Avslutter tråden ved å sette denne til False
 endThread = False
